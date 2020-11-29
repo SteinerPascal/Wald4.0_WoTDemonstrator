@@ -10,10 +10,15 @@ VS Code [RemoteDevelopment](https://marketplace.visualstudio.com/items?itemName=
 follwing [this blogpost](https://pythononpow.medium.com/remote-development-on-a-raspberry-pi-with-ssh-and-vscode-a23388e24bc7)
 
 <br>
-**Example Counter**<br>
-start server & increment counter value with curl:<br>
+Example Counter<br>
+start server
 ```
 node packages/cli/dist/cli.js examples/scripts/counter.js
+```
+<br>
+increment counter with curl
+<br>
+```
 curl -H "Content-Type:application/json" -X POST http://127.0.0.1:8080/counter/actions/increment?step=6
 ```
 <br>
