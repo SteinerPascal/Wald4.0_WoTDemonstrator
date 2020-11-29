@@ -1,9 +1,9 @@
 # Wald4.0_WoTDemonstrator
 Semantic and WoT demonstrator for project "Forest and Wood 4.0". Contains Semantics. WoT servient. TPM2.0 scripts
 
-##Raspberry Pi##
+## Raspberry Pi
 
-##Development Setup##
+## Development Setup
 
 VS Code [RemoteDevelopment](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack)
 <br>
