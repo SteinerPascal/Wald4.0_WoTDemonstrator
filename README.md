@@ -4,7 +4,9 @@ Semantic and WoT demonstrator for project "Forest and Wood 4.0". Contains Semant
 ##Raspberry Pi##
 
 ##Development Setup##
+
 VS Code [RemoteDevelopment](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack)
+<br>
 follwing [this blogpost](https://pythononpow.medium.com/remote-development-on-a-raspberry-pi-with-ssh-and-vscode-a23388e24bc7)
 
 
