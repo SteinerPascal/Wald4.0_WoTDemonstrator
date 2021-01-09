@@ -1,0 +1,28 @@
+{
+  "name": "kwh-client",
+  "version": "0.1.0",
+  "description": "kwh client to consume a thing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build"
+  },
+  "author": "pascal steiner",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.14.10",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
+    "@typescript-eslint/parser": "^4.9.0",
+    "eslint": "^7.15.0",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-prettier": "^3.2.0",
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.2",
+    "wot-typescript-definitions": "^0.8.0-SNAPSHOT.5"
+  },
+  "dependencies": {
+    "@node-wot/binding-http": "^0.7.4",
+    "@node-wot/core": "^0.7.4",
+    "sparql-http-client": "^2.2.2"
+  }
+}
