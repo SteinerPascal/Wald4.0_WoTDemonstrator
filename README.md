@@ -29,6 +29,15 @@ VS Code [RemoteDevelopment](https://marketplace.visualstudio.com/items?itemName=
 <br>
 follwing [this blogpost](https://pythononpow.medium.com/remote-development-on-a-raspberry-pi-with-ssh-and-vscode-a23388e24bc7)
 
+- allow camera module;
+
+- allow gpio read pins
+
+- enable ssh
+
+- change sudo $PATH ```VIM ~./bash``` and add :/home/pi/.nvm/versions/node/v14.15.0/bin
+
+
 <br>
 Example Counter<br>
 start server
