@@ -5,7 +5,7 @@ It was developed in the context of a semester work to show capabilities of WoT a
 
 ## Architecture
 
-Above you can see the Archtiecture. The whole thing consists of two Eclipse [thingweb](https://github.com/eclipse/thingweb.node-wot/) Servients connected with each other. The right Servient takes on the role of a server and the left one takes on the role of a client. 
+Above you can see the Archtiecture. The whole thing consists of two Eclipse [thingweb](https://github.com/eclipse/thingweb.node-wot/) Servients connected with each other. The right Servient takes on the role of a server and the left one takes on the role of a client. Above all we have the Graphdb which contains the fml4.0 and ml4.0 ontology. It's used to ensure a semantic understanding among multiple servients.  
 
 ### Server
 The Server is exposing a thing which in this case represents a Digital Twin connecting to the W&H4.0 Infrastructure. In this case the Digital Twin is a Raspberry Pi with a PIR motion Sensor and a RPi camera. For additional security there is a Trusted Platform Module 2.0 implemented. 
