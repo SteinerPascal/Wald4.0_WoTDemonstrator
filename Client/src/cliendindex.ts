@@ -1,53 +1,111 @@
-import { Helpers,Servient } from "@node-wot/core";
-import {WoT} from "wot-typescript-definitions"
-import * as BindingHttp from "@node-wot/binding-http"
+
+/*
+    WoT Dependencies
+*/
+import { Helpers, Servient } from "@node-wot/core";
+import { WoT } from "wot-typescript-definitions";
+import * as BindingHttp from "@node-wot/binding-http";
+import * as fs from "fs";
+import SparqlClient from 'sparql-http-client';
 
 
+
+/*
+SPARQL setup
+*/
+// enable types in for each
+interface SparqlResult {
+    value: string;
+    termType: string;
+}
+const endpointUrl = 'http://172.17.0.2:7200/repositories/WaldHolzDemonstrator'
+const query = `
+PREFIX ml40: <http://www.kwh-ontology/ml40#>
+PREFIX fml40: <http://www.kwh-ontology/fml40#>
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>
+PREFIX td: <http://mywotontology#>
+select ?endpoint ?feature where { 
+	?s a ml40:Device.
+    ?sensor a ssn:SensingDevice .
+    ?s ml40:hasSensor ?sensor.
+    ?s fml40:Endpoint ?endpoint .
+    ?feature a fml40:ObservingJob .
+    ?s fml40:hasFeature ?feature   
+    
+} limit 100`
+
+const client = new SparqlClient({ endpointUrl });
+
+const querySparql = () => {
+    return new Promise(async (resolve, rejects) => {
+        const stream = await client.query.select(query)
+
+        stream.on('data', row => {
+            let endvalues = [];
+            Object.values(row).forEach((value: SparqlResult) => {
+                console.log(`${value.value} (${value.termType})`)
+                let splits = value.value.split('#');
+                endvalues.push(splits[splits.length - 1])
+                resolve(endvalues)
+            });
+        });
+
+        await stream.on('error', err => {
+            console.error(err)
+            rejects()
+        });
+    });
+}
+
+/*
+    Setting up WoT Servient
+*/
 let WoTHelpers: Helpers;
-let WoT:WoT
-
+let WoT: WoT
 let servient = new Servient;
 servient.addClientFactory(new BindingHttp.HttpClientFactory())
 const initWoT = async () => {
-    WoT = await servient.start()
+    console.log('initwot')
+
 }
-initWoT()
-WoTHelpers = new Helpers(servient)
+querySparql().then(async (endvalues) => {
+    console.log(`myvalues: ${endvalues}`)
+    //initWoT()
+    WoT = await servient.start()
+    WoTHelpers = new Helpers(servient)
+    //starting servient
+
+    console.log('now')
+    WoTHelpers.fetch(endvalues[0]).then(async (td) => {
+        // using await for serial execution (note 'async' in then() of fetch())
+        try {
+            let thing = await WoT.consume(td);
+            // logging the Thing description to console
+            console.info("=== TD ===");
+            console.info(td);
+            console.info("==========");
+
+            thing.subscribeEvent(endvalues[1], async data => {
+                // the data sent when Event got triggered
+                console.log(data);
+                await thing.invokeAction('takePhoto', {});
+
+                // readproperty snapshot to retrieve the photo taken
+                let image = await thing.readProperty('lastSnapshot');
+                fs.writeFile(`../retrievedimage3${new Date()}.png`, image.toString(), 'base64', (err) => {
+                    if (err)
+                        return console.log(`error happened ${err}`);
+                    console.log('wrote file');
+                });
+            });
+        }
+        catch (err) {
+            console.error("Script error:", err);
+        }
+    }).catch((err) => { console.error("Fetch error:", err); });
+
+})
 
 
-WoTHelpers.fetch("http://192.168.8.123:8080/dtthing").then(async (td) => {
-    // using await for serial execution (note 'async' in then() of fetch())
-    try {
-        let thing = await WoT.consume(td);
-        console.info("=== TD ===");
-        console.info(td);
-        console.info("==========");
-        thing.subscribeEvent('movementDetected', data => {
-            console.log(data);
-        })
 
 
-
-        /* EXAMPLE CODE
-
-        // read property #1
-        let read1 = await thing.readProperty("count");
-        console.info("count value is", read1);
-        // increment property #1 (without step)
-        await thing.invokeAction("increment");
-        let inc1 = await thing.readProperty("count");
-        console.info("count value after increment #1 is", inc1);
-        // increment property #2 (with step)
-        await thing.invokeAction("increment", undefined, { uriVariables: { 'step': 3 } });
-        let inc2 = await thing.readProperty("count");
-        console.info("count value after increment #2 (with step 3) is", inc2);
-        // decrement property with formIndex == 2
-        await thing.invokeAction("decrement", undefined, { formIndex: 2 });
-        let dec1 = await thing.readProperty("count");
-        console.info("count value after decrement is", dec1);
-        */
-    }
-    catch (err) {
-        console.error("Script error:", err);
-    }
-}).catch((err) => { console.error("Fetch error:", err); });
