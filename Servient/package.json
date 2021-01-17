@@ -19,8 +19,8 @@
     "@node-wot/binding-http": "^0.7.4",
     "@node-wot/core": "^0.7.4",
     "ajv": "^6.10.2",
-    "onoff": "^6.0.1",
     "pi-camera-connect": "^0.3.3",
+    "pi-pir-sensor": "0.0.3",
     "request": "2.88.0"
   },
   "optionalDependencies": {},
