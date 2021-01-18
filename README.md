@@ -14,6 +14,24 @@ The Server is exposing a thing which in this case represents a Digital Twin conn
 The Client Servient can be initiaded on a client device and is capable of consuming the W&H4.0 DT. It can then start a communication with the W&H4.0 DT. It can read Properties (location, status, last action), it can trigger some actions (take a picture) and listen to events (motion sensor got triggered).
 
 
+### GraphDB
+To run the docker GraphDB Free you have to apply for the free version on the offical website. Follow the official Repo instructions [here](https://github.com/Ontotext-AD/graphdb-docker).
+<br>
+Then import the two ontologies fml40 and ml40 from [here](https://github.com/SteinerPascal/fml4.0-rdf) and [here](https://github.com/SteinerPascal/ml4.0-rdf). On [this](https://graphdb.ontotext.com/documentation/free/quick-start-guide.html) site you can find information on how to setup a DB Repo and how to import the ontologies.
+#### query
+The following query is needed to get the desired device:
+```
+PREFIX ml40: <http://www.kwh-ontology/ml40#>
+PREFIX fml40: <http://www.kwh-ontology/fml40#>
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>
+select * where { 
+	?s a ml40:Device.
+    ?s ml40:hasSensor ?sensor.
+    ?sensor a ssn:SensingDevice
+} limit 100
+```
+
+
 ### Thing Description
 In order for the Server to expose the Thing it needs some Thing Description(TD). You can inspect the used TD below:
 
