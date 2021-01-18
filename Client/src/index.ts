@@ -15,9 +15,15 @@ SPARQL setup
 */
 // enable types in for each
 interface SparqlResult {
-    value: string;
-    termType: string;
+    row: [
+        {
+            value: string
+            termType: string;
+
+        }
+    ]
 }
+
 const endpointUrl = 'http://172.17.0.2:7200/repositories/WaldHolzDemonstrator'
 const query = `
 PREFIX ml40: <http://www.kwh-ontology/ml40#>
@@ -40,13 +46,13 @@ const querySparql = () => {
     return new Promise(async (resolve, rejects) => {
         const stream = await client.query.select(query)
 
-        stream.on('data', row => {
+        stream.on('data', (row: SparqlResult) => {
             let endvalues = [];
-            Object.values(row).forEach((value: SparqlResult) => {
+            Object.values(row).forEach((value) => {
                 console.log(`${value.value} (${value.termType})`)
                 let splits = value.value.split('#');
                 endvalues.push(splits[splits.length - 1])
-                resolve(endvalues)
+                //resolve(endvalues)
             });
         });
 
@@ -61,21 +67,16 @@ const querySparql = () => {
     Setting up WoT Servient
 */
 let WoTHelpers: Helpers;
-let WoT: WoT
+let WoT: WoT;
 let servient = new Servient;
-servient.addClientFactory(new BindingHttp.HttpClientFactory())
-const initWoT = async () => {
-    console.log('initwot')
+servient.addClientFactory(new BindingHttp.HttpClientFactory());
 
-}
 querySparql().then(async (endvalues) => {
-    console.log(`myvalues: ${endvalues}`)
     //initWoT()
     WoT = await servient.start()
     WoTHelpers = new Helpers(servient)
     //starting servient
 
-    console.log('now')
     WoTHelpers.fetch(endvalues[0]).then(async (td) => {
         // using await for serial execution (note 'async' in then() of fetch())
         try {
@@ -88,7 +89,7 @@ querySparql().then(async (endvalues) => {
             thing.subscribeEvent(endvalues[1], async data => {
                 // the data sent when Event got triggered
                 console.log(data);
-                await thing.invokeAction('takePhoto', {});
+                await thing.invokeAction('takePhoto', 'testinput');
 
                 // readproperty snapshot to retrieve the photo taken
                 let image = await thing.readProperty('lastSnapshot');

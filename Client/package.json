@@ -2,7 +2,7 @@
   "name": "kwh-client",
   "version": "0.1.0",
   "description": "kwh client to consume a thing",
-  "main": "dist/clientindex.js",
+  "main": "dist/index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
