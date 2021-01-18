@@ -78,7 +78,6 @@ export class WotDevice {
                                 op: "invokeaction",
                                 contentType: "application/json",
                             }],
-
                     }
                 },
                 events: {
@@ -91,7 +90,7 @@ export class WotDevice {
                             type: "string"
                         }
                     }
-                },
+                }
             }
         ).then((exposedThing) => {
             this.thing = exposedThing;
