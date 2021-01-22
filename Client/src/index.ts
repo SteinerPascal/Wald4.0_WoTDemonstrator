@@ -52,7 +52,7 @@ const querySparql = () => {
                 console.log(`${value.value} (${value.termType})`)
                 let splits = value.value.split('#');
                 endvalues.push(splits[splits.length - 1])
-                //resolve(endvalues)
+                resolve(endvalues)
             });
         });
 
@@ -89,14 +89,17 @@ querySparql().then(async (endvalues) => {
             thing.subscribeEvent(endvalues[1], async data => {
                 // the data sent when Event got triggered
                 console.log(data);
-                await thing.invokeAction('takePhoto', 'testinput');
-
-                // readproperty snapshot to retrieve the photo taken
-                let image = await thing.readProperty('lastSnapshot');
-                fs.writeFile(`../retrievedimage3${new Date()}.png`, image.toString(), 'base64', (err) => {
-                    if (err)
-                        return console.log(`error happened ${err}`);
-                    console.log('wrote file');
+                thing.invokeAction('takePhoto', 'testinput').then((value) => {
+                    // readproperty snapshot to retrieve the photo taken
+                    thing.readProperty('lastSnapshot').then( (snapshot) => {
+                        //console.log(`retrieved image ${snapshot}`)
+                        fs.writeFile(`../retrievedimage3${new Date()}.jpg`, snapshot.toString(), 'base64', (err) => {
+                            if (err)
+                                return console.log(`error happened ${err}`);
+                            console.log('wrote file');
+                        });
+                    });
+            
                 });
             });
         }
