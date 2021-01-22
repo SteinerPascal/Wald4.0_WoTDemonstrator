@@ -18,7 +18,7 @@ export class WotDevice {
     public thing: WoT.ExposedThing;
     public WoT: WoT.WoT;
     public td: any;
-    public lastSnapshot;
+    public lastSnapshot: string;
     public movement: number = 0;
     constructor(WoT: WoT.WoT, tdDirectory?: string) {
         //create WotDevice as a server
@@ -31,7 +31,7 @@ export class WotDevice {
                     { "@language": "en" }],
                 "@type": "http://purl.oclc.org/NET/ssnx/ssn#SensingDevice",
                 id: "kwh-thingID-1",
-                title: "kwh-thing",
+                title: "dtthing",
                 titles: {
                     "en": "kwh-thing",
                     "de": "kwh-ding",
@@ -53,9 +53,7 @@ export class WotDevice {
                 properties: {
                     lastSnapshot: {
                         description: "returns the last image taken by action takePhoto",
-                        forms: [{
-                            contentType: "image/png"
-                        }]
+                        type: "string"
                     },
                     movement: {
                         title: "Counting the number of movements detected",
@@ -128,38 +126,53 @@ export class WotDevice {
         console.log(`showcase testing input:${inputData}`)
         return new Promise((resolve, reject) => {
             // do something with inputData
-            const imageTaken = async () => {
-                const stillCamera = new StillCamera();
+            const imageTaken =() => {
+                return new Promise<Buffer>( (resolve, reject) => {
+                    const stillCamera = new StillCamera();
 
-                const image = await stillCamera.takeImage();
-
-                return image;
+                    stillCamera.takeImage().then((image) => {
+                        console.log('image taken')
+                        resolve(image);
+                    });
+                   
+                });
+                
             };
 
-            const image = imageTaken()
-            this.lastSnapshot = image;
-            resolve('imageTaken');
+            imageTaken().then((image) => {
+                console.log('theeen')
+                let stringimage = image.toString('base64');
+                this.lastSnapshot = stringimage;
+                console.log('snapshot stored')
+                resolve('imageTaken');
+            })
+            
+           
         });
     }
 
     private listenToMotion() {
-
+        console.log('setting up listen to motion')
         var sensor = new Sensor({
+            
             // pin number must be specified
             pin: 12,
             // loop time to check PIR sensor, defaults to 1.5 seconds
             loop: 1500
         });
+        console.log('sensor on')
 
-        sensor.on('movement', function () {
+        sensor.on('movement', () => {
             console.log("movement detected! emitting event...")
             this.movement = this.movement + 1;
             this.thing.emitEvent("movementDetected", "movement got detected");
         });
+        sensor.start()
 
     }
-    private lastSnapshotHander() {
+    private lastSnapshotHander = () => {
         return new Promise((resolve, reject) => {
+            //console.log(JSON.stringify(this.lastSnapshot))
             resolve(this.lastSnapshot)
         });
     }

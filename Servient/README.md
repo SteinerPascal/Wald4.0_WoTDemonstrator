@@ -10,6 +10,12 @@ VS Code [RemoteDevelopment](https://marketplace.visualstudio.com/items?itemName=
 <br>
 follwing [this blogpost](https://pythononpow.medium.com/remote-development-on-a-raspberry-pi-with-ssh-and-vscode-a23388e24bc7)
 
+### Raspberry pi camera
+It's easy. Just follow the link to the official introduction [here](https://projects.raspberrypi.org/en/projects/getting-started-with-picamera)
+
+### Pir motion sensor
+Also for the motion sensor there is an official tutorial. You can find it [here](https://projects.raspberrypi.org/en/projects/parent-detector/1)
+
 ## To run the project:
 - Get dependencies
 ```

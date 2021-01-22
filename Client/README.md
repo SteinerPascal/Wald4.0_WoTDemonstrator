@@ -2,6 +2,8 @@
 The client code was running on a Windows10 environment. 
 
 ## To run the project:
+- Download node < v.10
+
 - Get dependencies
 ```
 npm install
